@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
+    "dev": "ts-node src/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "Leko/wordle-solver-leaderboard",
