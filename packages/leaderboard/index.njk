@@ -1,4 +1,36 @@
+<style>
+table.rank-table tr {
+  counter-increment: rowNumber;
+}
+table.rank-table tr td.rank:before {
+  content: counter(rowNumber);
+  min-width: 1em;
+  margin-right: 0.5em;
+}
+</style>
+
 <h2>History</h2>
+<table class="rank-table">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Wordle ID</th>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Turns</th>
+      <th>Duration</th>
+    </tr>
+  </thead>
+  <tbody>
 {% for item in history %}
-  {{ item.project }} is {{ item.turns }} years old
+  <tr>
+    <td class="rank"></td>
+    <td>{{ item.wordleId }}</td>
+    <td>{{ item.userName }}</td>
+    <td>{% if item.turns > 0 and not item.aborted %}✅{% else %}❌{% endif %}</td>
+    <td>{{ item.turns }}</td>
+    <td>{{ (item.duration / 1000).toFixed(3) }}s</td>
+  </tr>
 {% endfor %}
+  </tbody>
+</table>

@@ -2,18 +2,27 @@ import type { Browser } from "puppeteer";
 import puppeteer from "puppeteer";
 import { run } from "./runner";
 
+const projects = {
+  Leko: {
+    repository: "/Users/leko/ghq/github.com/Leko/wordle-solver",
+    launch: ["npm", "run", "--silent", "dev:evaluate"],
+  },
+};
+
 async function main(browser: Browser) {
-  const mock = {
-    name: "debug",
-    launch: ["npx", "ts-node", "-T", "src/mock.ts"],
-  };
-  const ctx = await browser.createIncognitoBrowserContext();
-  const page = await ctx.newPage();
-  const abort = new AbortController();
-  const abortTimeout = setTimeout(() => abort.abort(), 120 * 1000);
-  const result = await run(page, mock, { signal: abort.signal });
-  clearTimeout(abortTimeout);
-  console.log(result);
+  const results = await Promise.all(
+    Object.entries(projects).map(async ([userName, project]) => {
+      const page = await browser.newPage();
+      const abort = new AbortController();
+      const abortTimeout = setTimeout(() => abort.abort(), 300 * 1000);
+      const result = await run(page, project, { signal: abort.signal });
+      clearTimeout(abortTimeout);
+      return { userName, ...result };
+    })
+  );
+  results.forEach((result) => {
+    console.log(JSON.stringify(result));
+  });
 }
 
 puppeteer

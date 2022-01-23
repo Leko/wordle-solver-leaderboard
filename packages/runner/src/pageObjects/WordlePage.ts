@@ -30,6 +30,17 @@ export class WordlePage {
     return result;
   }
 
+  async getWordleID() {
+    const id = await this.page.evaluate(
+      // @ts-expect-error web components
+      () => document.querySelector("game-app")?.dayOffset
+    );
+    if (!id) {
+      throw new Error("Failed to fetch wordle ID from: " + JSON.stringify(id));
+    }
+    return id;
+  }
+
   private async waitForAnimation(timeout: number) {
     let startedAt = Date.now();
     while (1) {

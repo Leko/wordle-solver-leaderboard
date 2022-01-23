@@ -4,7 +4,7 @@ import type { Page } from "puppeteer";
 import { WordlePage } from "./pageObjects/WordlePage";
 
 interface Project {
-  name: string;
+  repository: string;
   launch: string[];
 }
 interface RunResult {}
@@ -23,7 +23,9 @@ export async function run(
   let log = "";
 
   performance.mark("RUNNER_START");
-  const child = spawn(project.launch[0], project.launch.slice(1));
+  const child = spawn(project.launch[0], project.launch.slice(1), {
+    cwd: project.repository,
+  });
   child.stderr.on("data", (chunk) => (log += chunk));
   signal.addEventListener("abort", () => {
     child.kill();
@@ -38,10 +40,17 @@ export async function run(
       break;
     }
     const word = line.toString().trim();
+    if (word.length !== 5) {
+      console.error("invalid line:", JSON.stringify(line));
+      continue;
+    }
     try {
       const result = await wordle.type(word);
       words.push(word);
       evaluations.push(result);
+      if (result.every((res) => res === "correct")) {
+        break;
+      }
       child.stdin.write(result.join(",") + "\n");
       turns++;
     } catch (e) {
@@ -59,6 +68,7 @@ export async function run(
   performance.mark("RUNNER_END");
 
   return {
+    wordleId: await wordle.getWordleID(),
     aborted: signal.aborted,
     turns,
     words,
