@@ -1,0 +1,16 @@
+{
+  "name": "leaderboard",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "eleventy --serve",
+    "build": "eleventy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "Leko/wordle-solver-leaderboard",
+  "author": "Leko <leko.noor@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@11ty/eleventy": "^1.0.0"
+  }
+}
