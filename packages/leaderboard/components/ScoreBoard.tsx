@@ -18,6 +18,7 @@ export function ScoreBoard(props: Omit<DataGridProps, "columns" | "getRowId">) {
           <DataGrid
             rows={rows}
             disableColumnMenu
+            disableSelectionOnClick
             getRowId={(row) => row.id}
             getRowClassName={() => styles.rankRow}
             columns={[
