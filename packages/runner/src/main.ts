@@ -1,21 +1,18 @@
 import type { Browser } from "puppeteer";
 import puppeteer from "puppeteer";
 import { run } from "./runner";
-
-const projects = {
-  Leko: {
-    repository: "/Users/leko/ghq/github.com/Leko/wordle-solver",
-    launch: ["npm", "run", "--silent", "dev:evaluate"],
-  },
-};
+import { contestants } from "./contestants";
 
 async function main(browser: Browser) {
   const results = await Promise.all(
-    Object.entries(projects).map(async ([userName, project]) => {
+    Object.entries(contestants).map(async ([userName, project]) => {
       const page = await browser.newPage();
       const abort = new AbortController();
       const abortTimeout = setTimeout(() => abort.abort(), 300 * 1000);
-      const result = await run(page, project, { signal: abort.signal });
+      const result = await run(page, project, {
+        signal: abort.signal,
+        userName,
+      });
       clearTimeout(abortTimeout);
       return { userName, ...result };
     })

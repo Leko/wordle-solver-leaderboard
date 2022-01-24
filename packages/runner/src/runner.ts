@@ -1,19 +1,31 @@
+import events from "node:events";
 import readline from "node:readline";
-import { spawn } from "node:child_process";
 import type { Page } from "puppeteer";
 import { WordlePage } from "./pageObjects/WordlePage";
+import { baseLogger } from "./logger";
+import { spawnRuntime } from "./runtime";
+import type { Project } from "./contestants";
 
-interface Project {
-  repository: string;
-  launch: string[];
+const MAX_TURNS = 6;
+const WORD_LENGTH = 5;
+
+interface RunResult {
+  wordleId: number;
+  aborted: boolean;
+  exitCode: number;
+  turns: number;
+  words: string[];
+  evaluations: string[][];
+  log: string;
+  duration: number;
 }
-interface RunResult {}
 
 export async function run(
   page: Page,
   project: Project,
-  { signal }: { signal: AbortSignal }
+  { signal, userName }: { signal: AbortSignal; userName: string }
 ): Promise<RunResult> {
+  const debug = baseLogger.extend("project").extend(userName);
   const wordle = await WordlePage.open(page);
   await wordle.dismissDialog();
 
@@ -21,12 +33,12 @@ export async function run(
   const evaluations: string[][] = [];
   let turns = 1;
   let log = "";
+  let uiInteraction = 0;
+  const runnerStartedAt = Date.now();
+  const child = spawnRuntime(project);
 
-  performance.mark("RUNNER_START");
-  const child = spawn(project.launch[0], project.launch.slice(1), {
-    cwd: project.repository,
-  });
   child.stderr.on("data", (chunk) => (log += chunk));
+  child.stderr.on("data", (chunk) => debug("" + chunk));
   signal.addEventListener("abort", () => {
     child.kill();
   });
@@ -35,45 +47,46 @@ export async function run(
     crlfDelay: Infinity,
   });
   for await (const line of rl) {
-    if (child.killed || turns > 6) {
+    if (turns > MAX_TURNS) {
       turns = -1;
       break;
     }
     const word = line.toString().trim();
-    if (word.length !== 5) {
+    if (word.length !== WORD_LENGTH) {
       console.error("invalid line:", JSON.stringify(line));
       continue;
     }
     try {
+      const uiStartedAt = Date.now();
       const result = await wordle.type(word);
+      uiInteraction += Date.now() - uiStartedAt;
       words.push(word);
       evaluations.push(result);
-      if (result.every((res) => res === "correct")) {
-        break;
-      }
       child.stdin.write(result.join(",") + "\n");
-      turns++;
+      if (result.some((r) => r !== "correct")) {
+        turns++;
+      }
     } catch (e) {
       if ((e as Error)?.message === "Not in word list") {
-        child.stdin.write("NOT_IN_WORD_LIST");
-        child.stdin.write("\n");
+        child.stdin.write("NOT_IN_WORD_LIST\n");
         continue;
       }
       throw e;
     }
   }
-  rl.close();
   child.stdin.end();
-  child.kill();
-  performance.mark("RUNNER_END");
+  rl.close();
+  await events.once(child, "exit");
 
+  const duration = Date.now() - runnerStartedAt;
   return {
     wordleId: await wordle.getWordleID(),
     aborted: signal.aborted,
+    exitCode: child.exitCode!,
     turns,
     words,
     evaluations,
     log: log.slice(0, 1024 * 5), // up to 5kb
-    duration: performance.measure("RUN", "RUNNER_START", "RUNNER_END").duration,
+    duration: duration - uiInteraction,
   };
 }
