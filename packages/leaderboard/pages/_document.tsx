@@ -16,7 +16,6 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <link rel="icon" href="/favicon.ico" />
-          <style>{`html,body,#__next{height:100%;display:flex;flex-direction:column;}`}</style>
         </Head>
         <body>
           <Main />
