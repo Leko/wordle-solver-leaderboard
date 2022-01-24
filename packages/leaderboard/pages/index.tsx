@@ -77,12 +77,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
       success: !row.aborted && row.turns > 0 ? -1 : 0, // for sort reason
     });
   }
-  const rows = sortBy(_rows, [
-    "wordleId",
-    "success",
-    "turns",
-    "duration",
-  ]) as typeof _rows;
+  const rows = sortBy(_rows, ["wordleId", "success", "turns", "duration"]);
   return {
     props: {
       today: rows.filter((row) => row.wordleId === maxWordleId).slice(0, 20),
