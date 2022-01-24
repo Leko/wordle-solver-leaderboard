@@ -1,6 +1,6 @@
 import { createReadStream } from "fs";
 import path from "path";
-import { sortBy } from "lodash-es";
+import { orderBy } from "lodash-es";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
@@ -38,13 +38,13 @@ const Home: NextPage<Props> = (props) => {
       </Head>
 
       <TabContext value={hash ?? "#today"}>
-        <Box>
-          <TabList aria-label="lab API tabs example" onChange={handleChange}>
+        {/* <Box>
+          <TabList aria-label="Tabs" onChange={handleChange}>
             <Tab label={`Today (#${today[0].wordleId})`} value="#today" />
             <Tab label="Last 7 days" value="#last7days" />
             <Tab label="All" value="#all" />
           </TabList>
-        </Box>
+        </Box> */}
         <TabPanel value="#today">
           <ScoreBoard rows={today} autoHeight />
         </TabPanel>
@@ -74,10 +74,14 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
       duration: row.duration,
       turns: row.turns,
       wordleId: row.wordleId,
-      success: !row.aborted && row.turns > 0 ? -1 : 0, // for sort reason
+      success: !row.aborted && row.turns > 0,
     });
   }
-  const rows = sortBy(_rows, ["wordleId", "success", "turns", "duration"]);
+  const rows = orderBy(
+    _rows,
+    ["wordleId", "success", "turns", "duration"],
+    ["desc", "desc", "asc", "asc"]
+  );
   return {
     props: {
       today: rows.filter((row) => row.wordleId === maxWordleId).slice(0, 20),

@@ -6,7 +6,7 @@ export type Row = {
   userName: string;
   turns: number;
   duration: number;
-  success: number;
+  success: boolean;
 };
 
 export function ScoreBoard(props: Omit<DataGridProps, "columns" | "getRowId">) {
@@ -27,6 +27,12 @@ export function ScoreBoard(props: Omit<DataGridProps, "columns" | "getRowId">) {
                 headerName: "#",
                 field: "_1",
                 cellClassName: styles.rank,
+                sortable: false,
+              },
+              {
+                width: 16,
+                headerName: "ID",
+                field: "wordleId",
                 sortable: false,
               },
               {
