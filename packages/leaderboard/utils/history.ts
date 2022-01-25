@@ -14,6 +14,8 @@ export type Row = {
   turns: number;
   duration: number;
   success: boolean;
+  words?: string[];
+  evaluations?: string[][];
 };
 
 export async function query(): Promise<{ maxWordleId: number; rows: Row[] }> {

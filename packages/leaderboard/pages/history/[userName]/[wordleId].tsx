@@ -55,30 +55,28 @@ const Home: NextPage<Props> = (props) => {
 
       <Typography variant="h2">Result</Typography>
       <ul>
-        {
-          // @ts-expect-error
-          row.evaluations.map((evaluation, i) => (
-            <li key={i}>
-              <Typography>
-                {evaluation.map((e, j) => (
-                  <span
-                    key={j}
-                    style={{
-                      display: "inline-block",
-                      width: "24px",
-                      height: "24px",
-                      textAlign: "center",
-                      verticalAlign: "center",
-                      ...styleMap[e],
-                    }}
-                  >
-                    {row.words[i][j]}
-                  </span>
-                ))}
-              </Typography>
-            </li>
-          ))
-        }
+        {row.evaluations!.map((evaluation, i) => (
+          <li key={i}>
+            <Typography>
+              {evaluation!.map((e, j) => (
+                <span
+                  key={j}
+                  style={{
+                    display: "inline-block",
+                    width: "24px",
+                    height: "24px",
+                    textAlign: "center",
+                    verticalAlign: "center",
+                    // @ts-expect-error
+                    ...styleMap[e],
+                  }}
+                >
+                  {row.words![i][j]}
+                </span>
+              ))}
+            </Typography>
+          </li>
+        ))}
       </ul>
 
       <Typography variant="h2">Log</Typography>
