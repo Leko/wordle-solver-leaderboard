@@ -23,6 +23,17 @@ export function spawnRuntime(project: Project) {
         "run",
         project.entrypoint,
       ]);
+    case "rust":
+      return spawn("docker", [
+        "run",
+        "-i",
+        "--rm",
+        "--memory=128m",
+        "rust:1.58-alpine",
+        "sh",
+        "-c",
+        `cargo install ${project.cargo} && wordle-solver`,
+      ]);
     default:
       throw new Error(`Unrecognized runtime`);
   }
