@@ -9,11 +9,24 @@ export const theme = createTheme({
       letterSpacing: "initial",
       fontFamily: `"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;`,
       color: "#fff",
+      fontWeight: "bold",
     },
     h1: {
-      fontWeight: "bold",
       lineHeight: "1.15",
       fontSize: "4rem",
+    },
+    h2: {
+      lineHeight: "1.15",
+      fontSize: "3rem",
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        text: {
+          textTransform: "none",
+        },
+      },
     },
   },
 });
