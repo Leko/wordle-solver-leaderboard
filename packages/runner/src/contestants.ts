@@ -6,16 +6,24 @@ export type Project =
   | {
       runtime: "deno";
       entrypoint: string;
+    }
+  | {
+      runtime: "rust";
+      cargo: string;
     };
 
 export const contestants: Record<string, Project> = {
-  Leko: {
-    runtime: "nodejs",
-    npm: "@lekoleko/wordle-solver",
+  example_rust: {
+    runtime: "rust",
+    cargo: "leko-wordle-solver-example",
   },
   example_node: {
     runtime: "nodejs",
     npm: "wordle-solver-example",
+  },
+  Leko: {
+    runtime: "nodejs",
+    npm: "@lekoleko/wordle-solver",
   },
   yamatatsu: {
     runtime: "deno",
