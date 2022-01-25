@@ -23,29 +23,36 @@ interface RunResult {
 export async function run(
   page: Page,
   project: Project,
-  { signal, userName }: { signal: AbortSignal; userName: string }
+  { userName }: { userName: string }
 ): Promise<RunResult> {
   const debug = baseLogger.extend("project").extend(userName);
-  const wordle = await WordlePage.open(page);
-  await wordle.dismissDialog();
-
+  const abort = new AbortController();
   const words: string[] = [];
   const evaluations: string[][] = [];
   let turns = 1;
   let log = "";
   let uiInteraction = 0;
-  const runnerStartedAt = Date.now();
-  const child = spawnRuntime(project);
 
-  child.stderr.on("data", (chunk) => (log += chunk));
-  child.stderr.on("data", (chunk) => debug("" + chunk));
-  signal.addEventListener("abort", () => {
-    child.kill();
-  });
+  const [wordle, child] = await Promise.all([
+    WordlePage.open(page).then(async (w) => {
+      await w.dismissDialog();
+      return w;
+    }),
+    spawnRuntime(project, userName),
+  ]);
   const rl = readline.createInterface({
     input: child.stdout,
     crlfDelay: Infinity,
   });
+  child.stderr.on("data", (chunk) => (log += chunk));
+  child.stderr.on("data", (chunk) => debug("" + chunk));
+
+  abort.signal.addEventListener("abort", () => {
+    child.kill();
+  });
+  const abortTimeout = setTimeout(() => abort.abort(), 300 * 1000);
+  const runnerStartedAt = Date.now();
+
   for await (const line of rl) {
     if (turns > MAX_TURNS) {
       turns = -1;
@@ -74,6 +81,7 @@ export async function run(
       throw e;
     }
   }
+  clearTimeout(abortTimeout);
   child.stdin.end();
   rl.close();
   await events.once(child, "exit");
@@ -81,7 +89,7 @@ export async function run(
   const duration = Date.now() - runnerStartedAt;
   return {
     wordleId: await wordle.getWordleID(),
-    aborted: signal.aborted,
+    aborted: abort.signal.aborted,
     exitCode: child.exitCode!,
     turns,
     words,

@@ -2,6 +2,7 @@ export type Project =
   | {
       runtime: "nodejs";
       npm: string;
+      bin?: string;
     }
   | {
       runtime: "deno";
@@ -10,12 +11,14 @@ export type Project =
   | {
       runtime: "rust";
       cargo: string;
+      bin?: string;
     };
 
 export const contestants: Record<string, Project> = {
   example_rust: {
     runtime: "rust",
     cargo: "leko-wordle-solver-example",
+    bin: "wordle-solver",
   },
   example_node: {
     runtime: "nodejs",
@@ -24,6 +27,7 @@ export const contestants: Record<string, Project> = {
   Leko: {
     runtime: "nodejs",
     npm: "@lekoleko/wordle-solver",
+    bin: "wordle-solver",
   },
   yamatatsu: {
     runtime: "deno",
