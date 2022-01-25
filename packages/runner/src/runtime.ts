@@ -1,40 +1,62 @@
 import { spawn } from "node:child_process";
+import path from "node:path";
 import type { Project } from "./contestants";
 
-export function spawnRuntime(project: Project) {
-  switch (project.runtime) {
+async function build(tag: string, base: string, arg: string) {
+  return new Promise((resolve, reject) => {
+    const child = spawn("docker", [
+      `build`,
+      `-t`,
+      `${tag}`,
+      `--build-arg`,
+      `${arg}`,
+      `--file`,
+      `${base}/Dockerfile`,
+      `${base}`,
+    ]);
+    child.once("error", (e) => {
+      child.removeAllListeners("exit");
+      reject(e);
+    });
+    child.once("exit", () => {
+      child.removeAllListeners("error");
+      resolve(null);
+    });
+  });
+}
+
+export async function spawnRuntime(p: Project, userName: string) {
+  const base = path.join(__dirname, "runtimes");
+  const image = `${userName.toLowerCase()}:latest`;
+
+  switch (p.runtime) {
     case "nodejs":
-      return spawn("docker", [
-        "run",
-        "-i",
-        "--rm",
-        "--memory=128m",
-        "node:16-alpine",
-        "npx",
-        project.npm,
-      ]);
+      await build(image, path.join(base, "nodejs"), `pkg=${p.npm}`);
+      break;
     case "deno":
-      return spawn("docker", [
-        "run",
-        "-i",
-        "--rm",
-        "--memory=128m",
-        "denoland/deno:alpine-1.18.0",
-        "run",
-        project.entrypoint,
-      ]);
+      await build(image, path.join(base, "deno"), `entrypoint=${p.entrypoint}`);
+      break;
     case "rust":
-      return spawn("docker", [
-        "run",
-        "-i",
-        "--rm",
-        "--memory=128m",
-        "rust:1.58-alpine",
-        "sh",
-        "-c",
-        `cargo install ${project.cargo} && wordle-solver`,
-      ]);
+      await build(image, path.join(base, "rust"), `cargo=${p.cargo}`);
+      break;
     default:
       throw new Error(`Unrecognized runtime`);
   }
+
+  return spawn("docker", ["run", ...getRunOptions(), image]);
+}
+
+function getRunOptions(): string[] {
+  return [
+    "-i",
+    "--rm",
+    ...getNetworkRestrictions(),
+    ...getResouceRestrictions(),
+  ];
+}
+function getNetworkRestrictions(): string[] {
+  return [];
+}
+function getResouceRestrictions(): string[] {
+  return ["--memory=128m"];
 }

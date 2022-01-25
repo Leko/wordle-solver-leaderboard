@@ -35,7 +35,7 @@ export async function run(
   let log = "";
   let uiInteraction = 0;
   const runnerStartedAt = Date.now();
-  const child = spawnRuntime(project);
+  const child = await spawnRuntime(project, userName);
 
   child.stderr.on("data", (chunk) => (log += chunk));
   child.stderr.on("data", (chunk) => debug("" + chunk));
