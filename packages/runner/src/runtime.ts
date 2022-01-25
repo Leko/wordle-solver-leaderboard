@@ -2,14 +2,13 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import type { Project } from "./contestants";
 
-async function build(tag: string, base: string, arg: string) {
+async function build(tag: string, base: string, ...args: string[]) {
   return new Promise((resolve, reject) => {
     const child = spawn("docker", [
       `build`,
       `-t`,
       `${tag}`,
-      `--build-arg`,
-      `${arg}`,
+      ...args.flatMap((arg) => [`--build-arg`, arg]),
       `--file`,
       `${base}/Dockerfile`,
       `${base}`,
@@ -31,13 +30,23 @@ export async function spawnRuntime(p: Project, userName: string) {
 
   switch (p.runtime) {
     case "nodejs":
-      await build(image, path.join(base, "nodejs"), `pkg=${p.npm}`);
+      await build(
+        image,
+        path.join(base, "nodejs"),
+        `pkg=${p.npm}`,
+        `bin=${p.bin ?? p.npm}`
+      );
       break;
     case "deno":
       await build(image, path.join(base, "deno"), `entrypoint=${p.entrypoint}`);
       break;
     case "rust":
-      await build(image, path.join(base, "rust"), `cargo=${p.cargo}`);
+      await build(
+        image,
+        path.join(base, "rust"),
+        `cargo=${p.cargo}`,
+        `bin=${p.bin ?? p.cargo}`
+      );
       break;
     default:
       throw new Error(`Unrecognized runtime`);
