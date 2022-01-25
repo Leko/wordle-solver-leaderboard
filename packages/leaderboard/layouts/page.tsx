@@ -1,7 +1,6 @@
 import AppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import styles from "./page.module.css";
@@ -27,10 +26,12 @@ export const LayoutPage: React.FC<Props> = ({ children, title }) => {
           </Toolbar>
         </Container>
       </AppBar>
-      <Box className={styles.main}>
-        <Typography variant="h1">{title}</Typography>
+      <Container maxWidth="md" className={styles.main}>
+        <Typography variant="h1" className={styles.title}>
+          {title}
+        </Typography>
         {children}
-      </Box>
+      </Container>
     </Box>
   );
 };

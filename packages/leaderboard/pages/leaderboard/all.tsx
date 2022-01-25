@@ -1,8 +1,8 @@
 import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
-import { ScoreBoard } from "../components/ScoreBoard";
-import { query, Row, sortByScore } from "../utils/history";
-import { LayoutLeaderboard } from "../layouts/Leaderboard";
+import { ScoreBoard } from "../../components/ScoreBoard";
+import { query, Row, sortByScore } from "../../utils/history";
+import { LayoutLeaderboard } from "../../layouts/Leaderboard";
 
 type Props = {
   rows: Row[];
@@ -15,7 +15,7 @@ const Home: NextPage<Props> = (props) => {
   return (
     <LayoutLeaderboard title="Leaderboard" maxWordleId={maxWordleId}>
       <Head>
-        <title>Leaderboard | Wordle solver contest</title>
+        <title>All | Leaderboard | Wordle solver contest</title>
         <meta name="description" content="TODO" />
       </Head>
       <ScoreBoard rows={rows} />
@@ -27,7 +27,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   const { maxWordleId, rows } = await query();
   return {
     props: {
-      rows: sortByScore(rows.filter((r) => r.wordleId === maxWordleId)),
+      rows: sortByScore(rows),
       maxWordleId,
     },
   };
