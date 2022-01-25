@@ -1,9 +1,11 @@
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { ScoreBoard } from "../../components/ScoreBoard";
-import { query, Row, sortByScore } from "../../utils/history";
+import { pluckSummary, query, Row, sortByScore } from "../../utils/history";
 import { LayoutPage } from "../../layouts/page";
 import { useRouter } from "next/router";
+import { Button } from "@mui/material";
+import { NextLinkComposed } from "../../components/NextLinkComposed";
 
 type Props = {
   rows: Row[];
@@ -20,10 +22,39 @@ const Home: NextPage<Props> = (props) => {
   return (
     <LayoutPage title={userName ?? ""}>
       <Head>
-        <title>{router.query.userName} | Wordle solver contest</title>
+        <title>{userName} | Wordle solver contest</title>
         <meta name="description" content="TODO" />
       </Head>
-      <ScoreBoard rows={rows} showWordleId />
+      <ScoreBoard
+        rows={rows}
+        showWordleId
+        additionalColumns={[
+          {
+            headerName: "Detail",
+            width: 72,
+            type: "actions",
+            field: "_detail",
+            renderCell(params) {
+              return (
+                <Button
+                  variant="text"
+                  size="small"
+                  component={NextLinkComposed}
+                  to={{
+                    pathname: `/history/[userName]/[wordleId]`,
+                    query: {
+                      userName: params.row.userName,
+                      wordleId: params.row.wordleId,
+                    },
+                  }}
+                >
+                  Detail
+                </Button>
+              );
+            },
+          },
+        ]}
+      />
     </LayoutPage>
   );
 };
@@ -40,7 +71,9 @@ export const getStaticProps: GetStaticProps<Props, PathParams> = async (
   const { maxWordleId, rows } = await query();
   return {
     props: {
-      rows: sortByScore(rows.filter((r) => r.userName === userName)),
+      rows: pluckSummary(
+        sortByScore(rows.filter((r) => r.userName === userName))
+      ),
       maxWordleId,
     },
   };

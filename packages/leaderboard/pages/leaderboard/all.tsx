@@ -1,7 +1,7 @@
 import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { ScoreBoard } from "../../components/ScoreBoard";
-import { query, Row, sortByScore } from "../../utils/history";
+import { pluckSummary, query, Row, sortByScore } from "../../utils/history";
 import { LayoutLeaderboard } from "../../layouts/Leaderboard";
 
 type Props = {
@@ -27,7 +27,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   const { maxWordleId, rows } = await query();
   return {
     props: {
-      rows: sortByScore(rows),
+      rows: pluckSummary(sortByScore(rows)),
       maxWordleId,
     },
   };

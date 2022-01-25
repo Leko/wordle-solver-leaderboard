@@ -1,10 +1,11 @@
 import path from "node:path";
 import { createReadStream } from "node:fs";
-import { orderBy } from "lodash-es";
+import { orderBy, map } from "lodash-es";
 import ndjson from "ndjson";
 
 const SRC = path.join(process.cwd(), "data", "history.ndjson");
 
+// FIXME: type
 export type Row = {
   id: string;
   aborted: string;
@@ -23,12 +24,8 @@ export async function query(): Promise<{ maxWordleId: number; rows: Row[] }> {
     maxWordleId = Math.max(maxWordleId, row.wordleId);
     rows.push({
       id: [row.wordleId, row.userName].join(":"),
-      aborted: row.aborted,
-      userName: row.userName,
-      duration: row.duration,
-      turns: row.turns,
-      wordleId: row.wordleId,
       success: !row.aborted && row.turns > 0 && row.exitCode === 0,
+      ...row,
     });
   }
   return {
@@ -43,3 +40,14 @@ export const sortByScore = (rows: Row[]): Row[] =>
     ["wordleId", "success", "turns", "duration"],
     ["desc", "desc", "asc", "asc"]
   );
+
+export const pluckSummary = (rows: Row[]): Row[] =>
+  rows.map((row) => ({
+    id: row.id,
+    aborted: row.aborted,
+    userName: row.userName,
+    duration: row.duration,
+    turns: row.turns,
+    wordleId: row.wordleId,
+    success: row.success,
+  }));

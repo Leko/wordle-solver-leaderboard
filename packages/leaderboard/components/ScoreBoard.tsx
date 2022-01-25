@@ -5,12 +5,13 @@ import styles from "./ScoreBoard.module.css";
 
 type Props = {
   showWordleId?: boolean;
+  additionalColumns?: GridEnrichedColDef[];
 };
 
 export function ScoreBoard(
   props: Omit<DataGridProps, "columns" | "getRowId"> & Props
 ) {
-  const { rows, showWordleId = false } = props;
+  const { rows, showWordleId = false, additionalColumns = [] } = props;
   const columns: GridEnrichedColDef[] = [
     {
       width: 16,
@@ -78,7 +79,8 @@ export function ScoreBoard(
       sortable: false,
       valueFormatter: ({ value }) =>
         typeof value === "number" ? `${(value / 1000).toFixed(3)}s` : "",
-    }
+    },
+    ...additionalColumns
   );
 
   return (
