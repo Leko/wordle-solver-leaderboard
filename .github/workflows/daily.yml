@@ -1,11 +1,6 @@
 name: daily
 
 on:
-  push:
-    paths-ignore:
-      - "packages/leaderboard/data/**"
-    branches:
-      - main
   schedule:
     - cron: "0 0 * * *"
 
