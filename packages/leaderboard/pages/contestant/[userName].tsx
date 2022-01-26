@@ -6,6 +6,7 @@ import { LayoutPage } from "../../layouts/page";
 import { useRouter } from "next/router";
 import { Button } from "@mui/material";
 import { NextLinkComposed } from "../../components/NextLinkComposed";
+import { SEO } from "../../components/SEO";
 
 type Props = {
   rows: Row[];
@@ -22,39 +23,9 @@ const Home: NextPage<Props> = (props) => {
   return (
     <LayoutPage title={userName ?? ""}>
       <Head>
-        <title>{userName} | Wordle solver contest</title>
-        <meta name="description" content="TODO" />
+        <SEO title={userName} description={`View all answers by ${userName}`} />
       </Head>
-      <ScoreBoard
-        rows={rows}
-        showWordleId
-        additionalColumns={[
-          {
-            headerName: "Detail",
-            width: 72,
-            type: "actions",
-            field: "_detail",
-            renderCell(params) {
-              return (
-                <Button
-                  variant="text"
-                  size="small"
-                  component={NextLinkComposed}
-                  to={{
-                    pathname: `/history/[userName]/[wordleId]`,
-                    query: {
-                      userName: params.row.userName,
-                      wordleId: params.row.wordleId,
-                    },
-                  }}
-                >
-                  Detail
-                </Button>
-              );
-            },
-          },
-        ]}
-      />
+      <ScoreBoard rows={rows} showWordleId showLinkToDetail />
     </LayoutPage>
   );
 };

@@ -3,8 +3,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { query, Row } from "../../../utils/history";
 import { LayoutPage } from "../../../layouts/page";
-import { Box, Typography } from "@mui/material";
-import { theme } from "../../../theme";
+import { Box, Button, Typography } from "@mui/material";
+import { useCallback, useState } from "react";
+import { WordTiles } from "../../../components/WordTiles";
+import { SEO } from "../../../components/SEO";
 
 type Props = {
   row: Row;
@@ -14,83 +16,66 @@ type PathParams = {
   wordleId: string;
 };
 
-const styleMap = {
-  correct: {
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.success.main,
-  },
-  present: {
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.warning.main,
-  },
-  absent: {
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.text.disabled,
-  },
-};
-
 const Home: NextPage<Props> = (props) => {
   const router = useRouter();
+  const [showWords, setShowWords] = useState(false);
   const userName = router.query.userName as string;
   const wordleId = router.query.wordleId as string;
   const { row } = props;
+  const seconds = (row.duration / 1000).toFixed(3);
+
+  const toggleWordsVisibility = useCallback(() => {
+    setShowWords((prev) => !prev);
+  }, [setShowWords]);
 
   return (
     <LayoutPage title={`${userName} #${wordleId}` ?? ""}>
       <Head>
-        <title>
-          {userName} #{wordleId} | Wordle solver contest
-        </title>
-        <meta name="description" content="TODO" />
+        <SEO
+          title={`${userName} #${wordleId}`}
+          description={
+            row.success
+              ? `Solved in ${row.turns} turns, in ${seconds} seconds`
+              : `Failed to solve`
+          }
+        />
       </Head>
 
-      <Typography>
-        <ul>
-          <li>success: {JSON.stringify(row.success)}</li>
-          <li>turns: {JSON.stringify(row.turns)}</li>
-          <li>aborted: {JSON.stringify(row.aborted)}</li>
-          <li>duration: {(row.duration / 1000).toFixed(3)}s</li>
-        </ul>
-      </Typography>
+      <ul style={{ color: "white" }}>
+        <li>
+          <Typography>success: {JSON.stringify(row.success)}</Typography>
+        </li>
+        <li>
+          <Typography>turns: {JSON.stringify(row.turns)}</Typography>
+        </li>
+        <li>
+          <Typography>aborted: {JSON.stringify(row.aborted)}</Typography>
+        </li>
+        <li>
+          <Typography>duration: {seconds}s</Typography>
+        </li>
+      </ul>
 
       <Typography variant="h2">Result</Typography>
-      <ul>
-        {row.evaluations!.map((evaluation, i) => (
-          <li key={i}>
-            <Typography>
-              {evaluation!.map((e, j) => (
-                <span
-                  key={j}
-                  style={{
-                    display: "inline-block",
-                    width: "24px",
-                    height: "24px",
-                    textAlign: "center",
-                    verticalAlign: "center",
-                    // @ts-expect-error
-                    ...styleMap[e],
-                  }}
-                >
-                  {row.words![i][j]}
-                </span>
-              ))}
-            </Typography>
-          </li>
-        ))}
-      </ul>
+      <WordTiles
+        words={row.words}
+        evaluations={row.evaluations}
+        showWords={showWords}
+      />
+      <Button variant="text" onClick={toggleWordsVisibility}>
+        Show/Hide actual words
+      </Button>
 
       <Typography variant="h2">Log</Typography>
       <Box
         bgcolor="action.hover"
         style={{ padding: 16, width: "100%", overflowX: "scroll" }}
       >
-        <Typography>
-          <pre style={{ margin: 0 }}>
-            {
-              // @ts-expect-error
-              row.log.trim()
-            }
-          </pre>
+        <Typography component="pre" style={{ margin: 0 }}>
+          {
+            // @ts-expect-error
+            row.log.trim()
+          }
         </Typography>
       </Box>
     </LayoutPage>

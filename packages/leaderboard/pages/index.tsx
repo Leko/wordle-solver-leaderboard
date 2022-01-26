@@ -3,6 +3,7 @@ import Head from "next/head";
 import { ScoreBoard } from "../components/ScoreBoard";
 import { pluckSummary, query, Row, sortByScore } from "../utils/history";
 import { LayoutLeaderboard } from "../layouts/Leaderboard";
+import { SEO } from "../components/SEO";
 
 type Props = {
   rows: Row[];
@@ -15,10 +16,9 @@ const Home: NextPage<Props> = (props) => {
   return (
     <LayoutLeaderboard title="Leaderboard" maxWordleId={maxWordleId}>
       <Head>
-        <title>Leaderboard | Wordle solver contest</title>
-        <meta name="description" content="TODO" />
+        <SEO title="Leaderboard" />
       </Head>
-      <ScoreBoard rows={rows} />
+      <ScoreBoard rows={rows} showLinkToDetail />
     </LayoutLeaderboard>
   );
 };

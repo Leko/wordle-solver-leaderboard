@@ -13,11 +13,15 @@ export const theme = createTheme({
     },
     h1: {
       lineHeight: "1.15",
-      fontSize: "4rem",
+      fontSize: "3.5rem",
+      marginTop: 16,
+      marginBottom: 8,
     },
     h2: {
       lineHeight: "1.15",
       fontSize: "3rem",
+      marginTop: 16,
+      marginBottom: 8,
     },
   },
   components: {

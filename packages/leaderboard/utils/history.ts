@@ -15,7 +15,7 @@ export type Row = {
   duration: number;
   success: boolean;
   words?: string[];
-  evaluations?: string[][];
+  evaluations?: ("present" | "absent" | "correct")[][];
 };
 
 export async function query(): Promise<{ maxWordleId: number; rows: Row[] }> {

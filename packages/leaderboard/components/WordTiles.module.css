@@ -1,0 +1,8 @@
+.table {
+  border-spacing: 0;
+}
+.cell {
+  width: 24px;
+  height: 24px;
+  text-align: center;
+}
