@@ -3,110 +3,118 @@ import { DataGrid, DataGridProps, GridEnrichedColDef } from "@mui/x-data-grid";
 import { NextLinkComposed } from "./NextLinkComposed";
 import styles from "./ScoreBoard.module.css";
 
-type Props = {
-  showWordleId?: boolean;
-  showLinkToDetail?: boolean;
-};
+type Props = {};
 
-export function ScoreBoard(
-  props: Omit<DataGridProps, "columns" | "getRowId"> & Props
-) {
-  const { rows, showWordleId = false, showLinkToDetail = false } = props;
-  const columns: GridEnrichedColDef[] = [
-    {
-      width: 16,
-      align: "center",
-      headerName: "#",
-      field: "_rank",
-      cellClassName: styles.rank,
-      sortable: false,
+export function rankColumn(): GridEnrichedColDef {
+  return {
+    width: 16,
+    align: "center",
+    headerName: "#",
+    field: "_rank",
+    cellClassName: styles.rank,
+    sortable: false,
+  };
+}
+
+export function wordleIdColumn(): GridEnrichedColDef {
+  return {
+    width: 16,
+    align: "center",
+    headerName: "ID",
+    field: "wordleId",
+    sortable: false,
+  };
+}
+
+export function userLinkColumn(): GridEnrichedColDef {
+  return {
+    flex: 1,
+    headerName: "Name",
+    field: "userName",
+    sortable: false,
+    renderCell(params) {
+      return (
+        <Button
+          variant="text"
+          size="small"
+          component={NextLinkComposed}
+          to={{
+            pathname: `/contestant/[userName]`,
+            query: { userName: params.value },
+          }}
+        >
+          {params.value}
+        </Button>
+      );
     },
-  ];
-  if (showWordleId) {
-    columns.push({
-      width: 16,
-      align: "center",
-      headerName: "ID",
-      field: "wordleId",
-      sortable: false,
-    });
-  }
-  columns.push(
-    {
-      flex: 1,
-      headerName: "Name",
-      field: "userName",
-      sortable: false,
-      renderCell(params) {
-        return (
-          <Button
-            variant="text"
-            size="small"
-            component={NextLinkComposed}
-            to={{
-              pathname: `/contestant/[userName]`,
-              query: { userName: params.value },
-            }}
-          >
-            {params.value}
-          </Button>
-        );
-      },
+  };
+}
+
+export function statusColumn(): GridEnrichedColDef {
+  return {
+    width: 80,
+    align: "center",
+    headerName: "Status",
+    field: "success",
+    sortable: false,
+    valueFormatter({ value }) {
+      return value ? "✅" : "❌";
     },
-    {
-      width: 80,
-      align: "center",
-      headerName: "Status",
-      field: "_status",
-      sortable: false,
-      renderCell(params) {
-        return params.row.success ? "✅" : "❌";
-      },
+  };
+}
+
+export function turnsColumn(): GridEnrichedColDef {
+  return {
+    width: 72,
+    headerName: "Turns",
+    type: "number",
+    field: "turns",
+    sortable: false,
+    valueFormatter: ({ api, id, value }) =>
+      api.getRow(id!)?.success ? value : "-",
+  };
+}
+
+export function durationColumn(): GridEnrichedColDef {
+  return {
+    headerName: "Duration",
+    type: "number",
+    field: "duration",
+    sortable: false,
+    valueFormatter: ({ value }) =>
+      typeof value === "number" ? `${(value / 1000).toFixed(3)}s` : "",
+  };
+}
+
+export function detailLinkColumn(): GridEnrichedColDef {
+  return {
+    headerName: "Detail",
+    width: 72,
+    type: "actions",
+    field: "_detail",
+    renderCell(params) {
+      return (
+        <Button
+          variant="text"
+          size="small"
+          component={NextLinkComposed}
+          to={{
+            pathname: `/history/[userName]/[wordleId]`,
+            query: {
+              userName: params.row.userName,
+              wordleId: params.row.wordleId,
+            },
+          }}
+        >
+          Detail
+        </Button>
+      );
     },
-    {
-      width: 72,
-      headerName: "Turns",
-      type: "number",
-      field: "turns",
-      sortable: false,
-      valueFormatter: ({ api, id, value }) =>
-        api.getRow(id!)?.success ? value : "-",
-    },
-    {
-      headerName: "Duration",
-      type: "number",
-      field: "duration",
-      sortable: false,
-      valueFormatter: ({ value }) =>
-        typeof value === "number" ? `${(value / 1000).toFixed(3)}s` : "",
-    }
-  );
-  if (showLinkToDetail) {
-    columns.push({
-      headerName: "Detail",
-      width: 72,
-      type: "actions",
-      field: "_detail",
-      renderCell(params) {
-        return (
-          <Button
-            variant="text"
-            size="small"
-            component={NextLinkComposed}
-            to={{
-              pathname: `/history/[userName]/[wordleId]`,
-              query: {
-                userName: params.row.userName,
-                wordleId: params.row.wordleId,
-              },
-            }}
-          >
-            Detail
-          </Button>
-        );
-      },
-    });
-  }
+  };
+}
+
+export function ScoreBoard(props: Omit<DataGridProps, "getRowId"> & Props) {
+  const { columns, rows } = props;
 
   return (
     <Box sx={{ height: 400, width: { xs: "100%", md: 560 } }}>

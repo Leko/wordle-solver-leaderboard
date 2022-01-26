@@ -1,5 +1,13 @@
 import type { GetStaticProps, NextPage } from "next";
-import { ScoreBoard } from "../components/ScoreBoard";
+import {
+  ScoreBoard,
+  rankColumn,
+  userLinkColumn,
+  statusColumn,
+  turnsColumn,
+  durationColumn,
+  detailLinkColumn,
+} from "../components/ScoreBoard";
 import { pluckSummary, query, Row, sortByScore } from "../utils/history";
 import { LayoutLeaderboard } from "../layouts/Leaderboard";
 import { SEO } from "../components/SEO";
@@ -15,7 +23,17 @@ const Home: NextPage<Props> = (props) => {
   return (
     <LayoutLeaderboard title="Leaderboard" maxWordleId={maxWordleId}>
       <SEO title="Leaderboard" />
-      <ScoreBoard rows={rows} showLinkToDetail />
+      <ScoreBoard
+        rows={rows}
+        columns={[
+          rankColumn(),
+          userLinkColumn(),
+          statusColumn(),
+          turnsColumn(),
+          durationColumn(),
+          detailLinkColumn(),
+        ]}
+      />
     </LayoutLeaderboard>
   );
 };

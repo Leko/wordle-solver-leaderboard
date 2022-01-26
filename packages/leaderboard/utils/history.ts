@@ -8,12 +8,12 @@ const SRC = path.join(process.cwd(), "data", "history.ndjson");
 // FIXME: type
 export type Row = {
   id: string;
-  aborted: string;
+  aborted: boolean;
   wordleId: number;
   userName: string;
   turns: number;
   duration: number;
-  success: boolean;
+  success: number;
   log?: string;
   words?: string[];
   evaluations?: ("present" | "absent" | "correct")[][];
@@ -36,6 +36,28 @@ export async function query(): Promise<{ maxWordleId: number; rows: Row[] }> {
     rows,
   };
 }
+
+export const groupByUser = (rows: Row[]): Record<string, Row[]> =>
+  rows.reduce(
+    (groups, row) => ({
+      ...groups,
+      [row.userName]: (groups[row.userName] ?? []).concat(row),
+    }),
+    {} as Record<string, Row[]>
+  );
+
+export const aggregate = (rows: Row[], userName: string): Row => {
+  const successRows = rows.filter((r) => r.success);
+  return {
+    id: userName,
+    aborted: rows.some((r) => r.aborted),
+    wordleId: -1,
+    userName,
+    turns: successRows.reduce((sum, r) => sum + r.turns, 0),
+    duration: successRows.reduce((sum, r) => sum + r.duration, 0),
+    success: successRows.length,
+  };
+};
 
 export const sortByScore = (rows: Row[]): Row[] =>
   orderBy(

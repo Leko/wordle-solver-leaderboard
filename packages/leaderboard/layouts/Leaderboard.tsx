@@ -24,12 +24,12 @@ export const LayoutLeaderboard: React.FC<Props> = (props) => {
             to="/"
             component={NextLinkComposed}
           />
-          {/* <Tab
+          <Tab
             label="Last 7 days"
-            value="/leaderboard/last7days"
-            to="/leaderboard/last7days"
+            value="/leaderboard/7days"
+            to="/leaderboard/7days"
             component={NextLinkComposed}
-          /> */}
+          />
           <Tab
             label="All"
             value="/leaderboard/all"
