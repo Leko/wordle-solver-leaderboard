@@ -6,7 +6,6 @@ on:
       - "packages/leaderboard/data/**"
     branches:
       - main
-      - update-daily
   schedule:
     - cron: "0 0 * * *"
 
@@ -29,6 +28,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add packages/leaderboard/data/history.ndjson
-          git diff --cached
-          # git commit -m "chore: update $(date +'%Y-%m-%d')"
-          # git push origin main
+          git commit -m "chore: update $(date +'%Y-%m-%d')"
+          git push origin main
