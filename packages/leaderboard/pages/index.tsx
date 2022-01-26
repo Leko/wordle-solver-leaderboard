@@ -18,7 +18,7 @@ const Home: NextPage<Props> = (props) => {
         <title>Leaderboard | Wordle solver contest</title>
         <meta name="description" content="TODO" />
       </Head>
-      <ScoreBoard rows={rows} />
+      <ScoreBoard rows={rows} showLinkToDetail />
     </LayoutLeaderboard>
   );
 };

@@ -25,36 +25,7 @@ const Home: NextPage<Props> = (props) => {
         <title>{userName} | Wordle solver contest</title>
         <meta name="description" content="TODO" />
       </Head>
-      <ScoreBoard
-        rows={rows}
-        showWordleId
-        additionalColumns={[
-          {
-            headerName: "Detail",
-            width: 72,
-            type: "actions",
-            field: "_detail",
-            renderCell(params) {
-              return (
-                <Button
-                  variant="text"
-                  size="small"
-                  component={NextLinkComposed}
-                  to={{
-                    pathname: `/history/[userName]/[wordleId]`,
-                    query: {
-                      userName: params.row.userName,
-                      wordleId: params.row.wordleId,
-                    },
-                  }}
-                >
-                  Detail
-                </Button>
-              );
-            },
-          },
-        ]}
-      />
+      <ScoreBoard rows={rows} showWordleId showLinkToDetail />
     </LayoutPage>
   );
 };

@@ -4,6 +4,7 @@ import { LayoutPage } from "./page";
 import { NextLinkComposed } from "../components/NextLinkComposed";
 import { TabContext, TabPanel } from "@mui/lab";
 import { useRouter } from "next/router";
+import { Box } from "@mui/material";
 
 type Props = {
   title: string;
@@ -36,7 +37,17 @@ export const LayoutLeaderboard: React.FC<Props> = (props) => {
             component={NextLinkComposed}
           />
         </TabList>
-        <TabPanel value={router.asPath}>{children}</TabPanel>
+        <Box
+          margin={4}
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {children}
+        </Box>
       </TabContext>
     </LayoutPage>
   );
