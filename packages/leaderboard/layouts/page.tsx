@@ -32,6 +32,15 @@ export const LayoutPage: React.FC<Props> = ({ children, title }) => {
         </Typography>
         {children}
       </Container>
+      <Container component="footer" className={styles.footer}>
+        <Typography component="small">
+          &copy;{" "}
+          <a href="https://leko.jp" target="_blank" rel="noreferrer noopener">
+            Leko
+          </a>{" "}
+          2022
+        </Typography>
+      </Container>
     </Box>
   );
 };

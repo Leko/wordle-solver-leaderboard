@@ -11,3 +11,8 @@
   flex-direction: column;
   align-items: center;
 }
+
+.footer {
+  margin: 40px auto;
+  text-align: center;
+}
