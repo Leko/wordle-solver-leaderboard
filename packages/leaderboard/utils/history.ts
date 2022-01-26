@@ -46,13 +46,13 @@ export const groupByUser = (rows: Row[]): Record<string, Row[]> =>
     {} as Record<string, Row[]>
   );
 
-export const aggregate = (rows: Row[]): Row => {
+export const aggregate = (rows: Row[], userName: string): Row => {
   const successRows = rows.filter((r) => r.success);
   return {
-    id: rows[0].id,
+    id: userName,
     aborted: rows.some((r) => r.aborted),
     wordleId: -1,
-    userName: rows[0].userName,
+    userName,
     turns: successRows.reduce((sum, r) => sum + r.turns, 0),
     duration: successRows.reduce((sum, r) => sum + r.duration, 0),
     success: successRows.length,

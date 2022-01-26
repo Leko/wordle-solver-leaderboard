@@ -73,7 +73,9 @@ const Home: NextPage<Props> = (props) => {
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const { maxWordleId, rows } = await query();
   const groups = groupByUser(rows);
-  const aggregated = Object.values(groups).map(aggregate);
+  const aggregated = Object.entries(groups).map(([userName, rows]) =>
+    aggregate(rows, userName)
+  );
   return {
     props: {
       rows: pluckSummary(sortByScore(aggregated)),
