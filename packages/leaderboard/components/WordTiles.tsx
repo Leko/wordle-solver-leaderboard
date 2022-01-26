@@ -32,7 +32,9 @@ export function WordTiles(props: Props) {
           <tr key={i}>
             {evaluation!.map((e, j) => (
               <td key={j} className={styles.cell} style={styleMap[e]}>
-                {showWords ? <Typography>{words![i][j]}</Typography> : null}
+                {showWords ? (
+                  <Typography variant="button">{words![i][j]}</Typography>
+                ) : null}
               </td>
             ))}
           </tr>
