@@ -1,10 +1,10 @@
 type Props = {
   title: string;
-  description: string;
+  description?: string;
 };
 
 export function SEO(props: Props) {
-  const { title, description } = props;
+  const { title, description = "" } = props;
 
   return (
     <>
