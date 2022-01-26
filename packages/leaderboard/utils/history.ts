@@ -14,6 +14,7 @@ export type Row = {
   turns: number;
   duration: number;
   success: boolean;
+  log?: string;
   words?: string[];
   evaluations?: ("present" | "absent" | "correct")[][];
 };
