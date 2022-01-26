@@ -43,7 +43,7 @@ export const LayoutPage: React.FC<Props> = ({ children, title }) => {
   return (
     <Box bgcolor="background.default" className={styles.root}>
       <AppBar position="static">
-        <Container maxWidth="xl">
+        <Container maxWidth="md">
           <Toolbar disableGutters>
             <Typography
               variant="h6"

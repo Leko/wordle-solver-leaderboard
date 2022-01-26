@@ -2,7 +2,15 @@ import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { query, Row } from "../../../utils/history";
 import { LayoutPage } from "../../../layouts/page";
-import { Box, Button, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useCallback, useState } from "react";
 import { WordTiles } from "../../../components/WordTiles";
 import { SEO } from "../../../components/SEO";
@@ -59,21 +67,30 @@ const Home: NextPage<Props> = (props) => {
         evaluations={row.evaluations}
         showWords={showWords}
       />
-      <Button variant="text" onClick={toggleWordsVisibility}>
-        Show/Hide actual words
-      </Button>
+      <Box mt={1}>
+        <Button variant="text" onClick={toggleWordsVisibility}>
+          Show/Hide actual words
+        </Button>
+      </Box>
 
-      <Typography variant="h2">Log</Typography>
-      <Box
-        bgcolor="action.hover"
-        style={{ padding: 16, width: "100%", overflowX: "scroll" }}
-      >
-        <Typography component="pre" style={{ margin: 0 }}>
-          {
-            // @ts-expect-error
-            row.log.trim()
-          }
-        </Typography>
+      <Box mt={2} maxWidth="100%">
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            Click to open log
+          </AccordionSummary>
+          <AccordionDetails>
+            <Box
+              bgcolor="action.hover"
+              style={{ padding: 16, overflowX: "scroll" }}
+            >
+              <Typography component="pre">{row.log?.trim() ?? null}</Typography>
+            </Box>
+          </AccordionDetails>
+        </Accordion>
       </Box>
     </LayoutPage>
   );
