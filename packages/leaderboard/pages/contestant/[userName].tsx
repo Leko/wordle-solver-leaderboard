@@ -2,7 +2,6 @@ import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import {
   ScoreBoard,
   wordleIdColumn,
-  userLinkColumn,
   statusColumn,
   turnsColumn,
   durationColumn,
@@ -32,7 +31,6 @@ const Home: NextPage<Props> = (props) => {
         rows={rows}
         columns={[
           wordleIdColumn(),
-          userLinkColumn(),
           statusColumn(),
           turnsColumn(),
           durationColumn(),
