@@ -2,6 +2,9 @@
   "name": "wordle-solver-leaderboard",
   "private": true,
   "version": "0.0.1",
+  "workspaces": [
+    "packages/*"
+  ],
   "description": "Leaderboards to compete for Wordle solver scores",
   "scripts": {},
   "repository": "Leko/wordle-solver-leaderboard",
