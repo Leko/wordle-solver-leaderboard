@@ -1,5 +1,4 @@
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { query, Row } from "../../../utils/history";
 import { LayoutPage } from "../../../layouts/page";
@@ -30,16 +29,14 @@ const Home: NextPage<Props> = (props) => {
 
   return (
     <LayoutPage title={`${userName} #${wordleId}` ?? ""}>
-      <Head>
-        <SEO
-          title={`${userName} #${wordleId}`}
-          description={
-            row.success
-              ? `Solved in ${row.turns} turns, in ${seconds} seconds`
-              : `Failed to solve`
-          }
-        />
-      </Head>
+      <SEO
+        title={`${userName} #${wordleId}`}
+        description={
+          row.success
+            ? `Solved in ${row.turns} turns, in ${seconds} seconds`
+            : `Failed to solve`
+        }
+      />
 
       <ul style={{ color: "white" }}>
         <li>

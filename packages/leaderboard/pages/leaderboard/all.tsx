@@ -1,5 +1,4 @@
 import type { GetStaticProps, NextPage } from "next";
-import Head from "next/head";
 import { ScoreBoard } from "../../components/ScoreBoard";
 import { pluckSummary, query, Row, sortByScore } from "../../utils/history";
 import { LayoutLeaderboard } from "../../layouts/Leaderboard";
@@ -15,9 +14,7 @@ const Home: NextPage<Props> = (props) => {
 
   return (
     <LayoutLeaderboard title="Leaderboard" maxWordleId={maxWordleId}>
-      <Head>
-        <SEO title="All | Leaderboard" />
-      </Head>
+      <SEO title="All | Leaderboard" />
       <ScoreBoard rows={rows} />
     </LayoutLeaderboard>
   );

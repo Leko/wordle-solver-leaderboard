@@ -1,11 +1,8 @@
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import Head from "next/head";
 import { ScoreBoard } from "../../components/ScoreBoard";
 import { pluckSummary, query, Row, sortByScore } from "../../utils/history";
 import { LayoutPage } from "../../layouts/page";
 import { useRouter } from "next/router";
-import { Button } from "@mui/material";
-import { NextLinkComposed } from "../../components/NextLinkComposed";
 import { SEO } from "../../components/SEO";
 
 type Props = {
@@ -22,9 +19,7 @@ const Home: NextPage<Props> = (props) => {
 
   return (
     <LayoutPage title={userName ?? ""}>
-      <Head>
-        <SEO title={userName} description={`View all answers by ${userName}`} />
-      </Head>
+      <SEO title={userName} description={`View all answers by ${userName}`} />
       <ScoreBoard rows={rows} showWordleId showLinkToDetail />
     </LayoutPage>
   );
