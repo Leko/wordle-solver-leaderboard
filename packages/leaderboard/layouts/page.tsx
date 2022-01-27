@@ -21,7 +21,7 @@ const links: NextLinkComposedProps[] = [
   { children: "Leaderboard", to: "/" },
   {
     children: "How to participate",
-    to: "https://github.com/Leko/wordle-solver-leaderboard",
+    to: "https://github.com/Leko/wordle-solver-leaderboard/blob/main/CONTRIBUTING.md",
     target: "_blank",
     rel: "noreferer noopener",
   },
