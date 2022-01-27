@@ -1,7 +1,7 @@
 ## How to participate
 
 1. Fork this repository
-1. Please add your information to [packages/runner/src/contestants.ts](../packages/runner/src/contestants.ts)
+1. Please add your information to [packages/runner/src/contestants.ts](packages/runner/src/contestants.ts)
    - The key of the object is your nickname
    - The value is the metadata needed to execute your code
    - Node.js
