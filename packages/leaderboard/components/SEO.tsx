@@ -14,6 +14,8 @@ export function SEO(props: Props) {
       <meta name="description" content={description} />
       <meta name="og:title" content={`${title} | Wordle solver contest`} />
       <meta name="og:description" content={description} />
+      <meta name="twitter:card" content="summary"></meta>
+      <meta name="twitter:creator" content="@L_e_k_o" />
     </Head>
   );
 }
