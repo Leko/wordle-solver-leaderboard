@@ -11,8 +11,8 @@ export function SEO(props: Props) {
   return (
     <Head>
       <title>{title} | Wordle solver contest</title>
-      <meta name="og:title" content={description} />
       <meta name="description" content={description} />
+      <meta name="og:title" content={`${title} | Wordle solver contest`} />
       <meta name="og:description" content={description} />
     </Head>
   );
