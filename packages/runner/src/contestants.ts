@@ -39,4 +39,10 @@ export const contestants: Record<string, Project> = {
     entrypoint:
       "https://raw.githubusercontent.com/Leko/wordle-cli/repl/repl.ts",
   },
+  nkowne63: {
+		repository: "https://github.com/neutron63zf/wordle-solver-rs",
+		runtime: "rust",
+    cargo: "nkowne63-wordle-solver-rs-01",
+    bin: "wordle-solver",
+	},
 };
