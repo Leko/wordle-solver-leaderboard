@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+    paths-ignore:
+      - packages/leaderboard/data/history.ndjson
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run -s dev --workspace=runner
+        env:
+          DEBUG: "runner*"
