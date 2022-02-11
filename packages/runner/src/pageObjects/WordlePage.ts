@@ -4,16 +4,20 @@ export class WordlePage {
   constructor(private page: Page) {}
 
   static async open(page: Page) {
-    await page.goto("https://www.powerlanguage.co.uk/wordle/", {
+    await page.goto("https://www.nytimes.com/games/wordle/", {
       waitUntil: "load",
     });
-    await page.waitForSelector("pierce/[icon='close']", { visible: true });
+    await page.waitForSelector("pierce/.close-icon", {
+      visible: true,
+    });
     return new WordlePage(page);
   }
 
   async dismissDialog() {
-    await this.page.click("pierce/[icon='close']");
-    await this.page.waitForSelector("pierce/[icon='close']", { hidden: true });
+    await this.page.click("pierce/.close-icon");
+    await this.page.waitForSelector("pierce/.close-icon", {
+      hidden: true,
+    });
   }
 
   async type(word: string): Promise<string[]> {
