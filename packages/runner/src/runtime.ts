@@ -59,7 +59,8 @@ function getRunOptions(): string[] {
   return [
     "-i",
     "--rm",
-    '--pull=never',
+    "--pull=never",
+    "--cap-drop=all",
     ...getNetworkRestrictions(),
     ...getResouceRestrictions(),
   ];
