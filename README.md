@@ -25,7 +25,40 @@ Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## How the runner works
 
-[![](https://mermaid.ink/img/pako:eNqNVNtqGzEQ_ZVBTy24JQ34ZSmGJs5DoDRgO5RS52G8Gm9FtRpVl7gm5N-r9V68XZlSPSwj7TkzZ44uL6JkSaIQnn5FMiUtFVYO662BNCy6oEpl0QRYRWPI5eue9TM5QA_fOLpumsO-spOa8vXPhJLcjtHJrWl_YxnUMwb6q2Qbv1ss2qCAm6i0hOO55sedWygTGBCWXP5MmlSNFb2f8FshBTxYMhB-UFJTUcNFI-GAKsCe3ekHWgvKg0sKjxNl427aeKSsXYBP1k5KtzqLZuFUYCxzUmBso2a2EE1QGlTn94lesnNUBkDjDylNp7rCmhrZnPhd7804IV21e3N9dTWDD_P0uZ7P354BzWirjlr5vt4sHx43T7AibzkZ1FQ4cLNXPYfMaJK5fG9sDAMLMo8d-ajDOcFgZp9glfLTZWxW7O53cMnBfyfuW9tcAP2XSdl2Nibdf3m6mHFwZwgy-jpwd1AkXdz_rM9bzZ6Gs5txx4czuza3rDV1HvmAwU9wo_tYwKPVjHKKHZXqb6iYiZpcjUqmp-SlgW1FYtW0FUUKJe2xsUVszWuCRisT-U6qwE4UwUWaCYyB10dT9vMW071Gotij9vT6Bwfeitw)](https://mermaid.live/edit#pako:eNqNVNtqGzEQ_ZVBTy24JQ34ZSmGJs5DoDRgO5RS52G8Gm9FtRpVl7gm5N-r9V68XZlSPSwj7TkzZ44uL6JkSaIQnn5FMiUtFVYO662BNCy6oEpl0QRYRWPI5eue9TM5QA_fOLpumsO-spOa8vXPhJLcjtHJrWl_YxnUMwb6q2Qbv1ss2qCAm6i0hOO55sedWygTGBCWXP5MmlSNFb2f8FshBTxYMhB-UFJTUcNFI-GAKsCe3ekHWgvKg0sKjxNl427aeKSsXYBP1k5KtzqLZuFUYCxzUmBso2a2EE1QGlTn94lesnNUBkDjDylNp7rCmhrZnPhd7804IV21e3N9dTWDD_P0uZ7P354BzWirjlr5vt4sHx43T7AibzkZ1FQ4cLNXPYfMaJK5fG9sDAMLMo8d-ajDOcFgZp9glfLTZWxW7O53cMnBfyfuW9tcAP2XSdl2Nibdf3m6mHFwZwgy-jpwd1AkXdz_rM9bzZ6Gs5txx4czuza3rDV1HvmAwU9wo_tYwKPVjHKKHZXqb6iYiZpcjUqmp-SlgW1FYtW0FUUKJe2xsUVszWuCRisT-U6qwE4UwUWaCYyB10dT9vMW071Gotij9vT6Bwfeitw)
+```mermaid
+sequenceDiagram
+    participant Runner
+    participant solver as Your solver
+    participant Wordle
+    participant Leaderboard
+
+    activate Runner
+    Runner->>Runner: Build your solver<br>into a Docker image.
+    Runner->>Wordle: Open the page<br>and wait for the app is ready
+    activate Wordle
+    Wordle->>Runner: Wordle App
+    Runner->>solver: Run the Docker image
+    activate solver
+    loop until it solve the correct answer or the game is over.
+        rect rgb(200, 150, 255)
+            solver->>Runner: [STDOUT] Respond the word
+        end
+        Runner->>Wordle: Input the word and wait for the result
+        Wordle->>Wordle: Render the result
+        Runner->>Wordle: Extract the result
+        Wordle->>Runner: The result
+        rect rgb(200, 150, 255)
+            Runner->>solver: [STDIN] The result
+        end
+    end
+    Runner->>solver: Stop
+    deactivate solver
+    Runner->>Wordle: Close the page
+    deactivate Wordle
+    Runner->>Runner: Collect the stats
+    Runner->>Leaderboard: Upload the stats
+    deactivate Runner
+```
 
 - When the process starts, first output the first word and new line character (`\n`) to STDOUT.
   - ex. `count\n`
